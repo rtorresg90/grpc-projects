@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "github.com/rtorresg90/grpc-projects/chat/proto";
+
+message Join {
+  int32 room = 1;
+  string user = 2;
+}
+
+// user text in chat
+message Text {
+  int32 room = 1;
+  string user = 2;
+  string message = 3;
+}
+
+message Typing {
+  int32 room = 1;
+  string user = 2;
+}
+
+// server notifications
+message Notifications {
+  int32 room = 1;
+  string message = 2;
+}
+
+message ClientEvent {
+  oneof payload {
+    Join join = 1;
+    Text text = 2;
+    Typing typing = 3;
+  }
+}
+
+message ServerEvent {
+  oneof payload {
+    Notifications notifications = 1;
+    Text text = 2;
+    Typing typing = 3;
+  }
+}
+
+service ChatService {
+  rpc Chat (stream ClientEvent) returns (stream ServerEvent);
+}
